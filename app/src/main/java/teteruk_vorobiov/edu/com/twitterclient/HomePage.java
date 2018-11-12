@@ -1,8 +1,10 @@
 package teteruk_vorobiov.edu.com.twitterclient;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -16,24 +18,40 @@ import com.twitter.sdk.android.core.TwitterException;
 import com.twitter.sdk.android.core.models.User;
 
 public class HomePage extends Activity {
+    private TextView textViewUsername;
+    private TextView textViewUserInfo;
+    private ImageView imageViewUserAvatar;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.homepage);
-        String username = getIntent().getStringExtra("username");
-        final TextView profileInfo = findViewById(R.id.TV_userinfo);
-        final ImageView profileImage = findViewById(R.id.TV_userimage);
+        initView();
+        loadApiClient();
+    }
+
+    private void loadApiClient() {
         TwitterApiClient apiClient = TwitterCore.getInstance().getApiClient();
-        apiClient.getAccountService().verifyCredentials(true, false, true)
+        apiClient.getAccountService()
+                .verifyCredentials(true, false, true)
                 .enqueue(new Callback<User>() {
                     @Override
                     public void success(Result<User> result) {
                         User user = result.data;
-                        setUserInfo(user, profileInfo);
+
+                        String stringBuilder = "Email: " + user.email + System.lineSeparator() +
+                                "Description:" + user.description + System.lineSeparator() +
+                                "Location: " + user.location + System.lineSeparator() +
+                                "Followers count: " + user.followersCount + System.lineSeparator() +
+                                "Friends count: " + user.friendsCount + System.lineSeparator();
+                        textViewUserInfo.setText(stringBuilder);
+
+                        textViewUsername.setText(user.name);
+
                         String imgUrl = user.profileImageUrl;
                         Picasso.with(getApplicationContext())
                                 .load(imgUrl.replace("_normal", ""))
-                                .into(profileImage);
+                                .into(imageViewUserAvatar);
                     }
 
                     @Override
@@ -44,14 +62,14 @@ public class HomePage extends Activity {
                 });
     }
 
-    private void setUserInfo(User user, TextView profileInfo) {
-        StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append("Name: ").append(user.name).append(System.lineSeparator())
-                .append("Email: ").append(user.email).append(System.lineSeparator())
-                .append("Description:").append(user.description).append(System.lineSeparator())
-                .append("Location: ").append(user.location).append(System.lineSeparator())
-                .append("Followers count: ").append(user.followersCount).append(System.lineSeparator())
-                .append("Friends count: ").append(user.friendsCount).append(System.lineSeparator());
-        profileInfo.setText(stringBuilder.toString());
+    private void initView() {
+        textViewUserInfo = findViewById(R.id.user_profile_info);
+        textViewUsername = findViewById(R.id.user_profile_username);
+
+        imageViewUserAvatar = findViewById(R.id.user_profile_avatar);
+        imageViewUserAvatar.setClipToOutline(true);
+
+        Button buttonToTweet = findViewById(R.id.button_to_tweet);
+        buttonToTweet.setOnClickListener((view) -> startActivity(new Intent(this, TweetActivity.class)));
     }
 }

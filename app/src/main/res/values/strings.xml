@@ -2,4 +2,10 @@
     <string name="app_name">TwitterClient</string>
     <string name="com.twitter.sdk.android.CONSUMER_KEY">e28p2A4EcARaCTeh8XrGObMKR</string>
     <string name="com.twitter.sdk.android.CONSUMER_SECRET">aTCcdpxzUIxp2TLFj6qEcC7f1R7KaRFvfPvPOoHb239g0xz3Us</string>
+    <string name="home_page">Home page</string>
+    <string name="username">Username</string>
+    <string name="userinfo">UserInfo</string>
+    <string name="avatar">Avatar</string>
+    <string name="login_please">Login please</string>
+    <string name="my_tweet">My Tweet</string>
 </resources>
