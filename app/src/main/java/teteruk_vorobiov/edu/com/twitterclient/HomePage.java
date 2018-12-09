@@ -15,7 +15,9 @@ import com.twitter.sdk.android.core.Result;
 import com.twitter.sdk.android.core.TwitterApiClient;
 import com.twitter.sdk.android.core.TwitterCore;
 import com.twitter.sdk.android.core.TwitterException;
+import com.twitter.sdk.android.core.TwitterSession;
 import com.twitter.sdk.android.core.models.User;
+import com.twitter.sdk.android.tweetcomposer.ComposerActivity;
 
 public class HomePage extends Activity {
     private TextView textViewUsername;
@@ -69,7 +71,15 @@ public class HomePage extends Activity {
         imageViewUserAvatar = findViewById(R.id.user_profile_avatar);
         imageViewUserAvatar.setClipToOutline(true);
 
-        Button buttonToTweet = findViewById(R.id.button_to_tweet);
-        buttonToTweet.setOnClickListener((view) -> startActivity(new Intent(this, TweetActivity.class)));
+        Button showTweetsButton = findViewById(R.id.button_to_tweets);
+        showTweetsButton.setOnClickListener((view) -> startActivity(new Intent(this, TimelineActivity.class)));
+        Button makeTweetButton = findViewById(R.id.make_tweet);
+
+        final TwitterSession session = TwitterCore.getInstance().getSessionManager()
+                .getActiveSession();
+        final Intent intent = new ComposerActivity.Builder(this)
+                .session(session)
+                .createIntent();
+        makeTweetButton.setOnClickListener((view) -> startActivity(intent));
     }
 }

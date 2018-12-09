@@ -56,8 +56,13 @@
     </android.support.v7.widget.CardView>
 
     <Button
-        android:id="@+id/button_to_tweet"
+        android:id="@+id/button_to_tweets"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/my_tweet" />
+    <Button
+        android:id="@+id/make_tweet"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/make_tweet" />
 </LinearLayout>

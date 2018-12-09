@@ -7,5 +7,6 @@
     <string name="userinfo">UserInfo</string>
     <string name="avatar">Avatar</string>
     <string name="login_please">Login please</string>
-    <string name="my_tweet">My Tweet</string>
+    <string name="my_tweet">My Tweets</string>
+    <string name="make_tweet">Tweet</string>
 </resources>
