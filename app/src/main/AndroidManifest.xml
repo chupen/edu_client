@@ -20,6 +20,7 @@
         <activity android:name=".HomePage" />
         <activity android:name=".TweetActivity" />
         <activity android:name=".TimelineActivity" />
+        <activity android:name=".FollowersActivity" />
     </application>
 
 </manifest>

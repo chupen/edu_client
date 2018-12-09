@@ -74,4 +74,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/make_tweet" />
+    <Button
+        android:id="@+id/show_followers"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/make_tweet" />
 </LinearLayout>
