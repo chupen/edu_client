@@ -1,12 +1,10 @@
 package teteruk_vorobiov.edu.com.twitterclient;
 
-import com.twitter.sdk.android.core.Callback;
 import com.twitter.sdk.android.core.TwitterApiClient;
 import com.twitter.sdk.android.core.TwitterSession;
 
-import retrofit2.Response;
-import retrofit2.http.POST;
-import retrofit2.http.Query;
+import teteruk_vorobiov.edu.com.twitterclient.services.FollowersService;
+import teteruk_vorobiov.edu.com.twitterclient.services.UploadPhotoService;
 
 public class MyTwitterApiClient extends TwitterApiClient {
 
@@ -14,12 +12,14 @@ public class MyTwitterApiClient extends TwitterApiClient {
         super(session);
     }
 
-    public CustomService getCustomService() {
-        return getService(CustomService.class);
+    public UploadPhotoService getUploadService() {
+        return getService(UploadPhotoService.class);
     }
+
+    public FollowersService getFollowersService() {
+        return getService(FollowersService.class);
+    }
+
 }
 
-interface CustomService {
-    @POST("/1.1/account/update_profile_image.json")
-    void sendPhoto(@Query("user_id") long id, @Query("image") String image, Callback<Response> cb);
-}
+
