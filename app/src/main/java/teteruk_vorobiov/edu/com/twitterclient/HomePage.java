@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -16,6 +17,9 @@ import com.twitter.sdk.android.core.TwitterApiClient;
 import com.twitter.sdk.android.core.TwitterCore;
 import com.twitter.sdk.android.core.TwitterException;
 import com.twitter.sdk.android.core.models.User;
+
+import retrofit2.Call;
+import retrofit2.Response;
 
 public class HomePage extends Activity {
     private TextView textViewUsername;
@@ -71,5 +75,11 @@ public class HomePage extends Activity {
 
         Button buttonToTweet = findViewById(R.id.button_to_tweet);
         buttonToTweet.setOnClickListener((view) -> startActivity(new Intent(this, TweetActivity.class)));
+        Button buttonChangeAvatar = findViewById(R.id.button_change_avatar);
+        buttonChangeAvatar.setOnClickListener((view) -> startActivity(new Intent(this, TweetActivity.class)));
+        Button buttonToFollowers = findViewById(R.id.button_to_followers);
+        buttonToFollowers.setOnClickListener((view) -> startActivity(new Intent(this, TweetActivity.class)));
+        Button buttonToFollowing = findViewById(R.id.button_to_following);
+        buttonToFollowing.setOnClickListener((view) -> startActivity(new Intent(this, TweetActivity.class)));
     }
 }
