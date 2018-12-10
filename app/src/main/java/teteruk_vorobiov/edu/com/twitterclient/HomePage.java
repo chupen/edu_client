@@ -29,11 +29,11 @@ import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.concurrent.Callable;
 
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Response;
+import teteruk_vorobiov.edu.com.twitterclient.utils.JsonUtils;
 
 import static com.twitter.sdk.android.core.Twitter.TAG;
 
@@ -143,10 +143,14 @@ public class HomePage extends Activity {
                 .enqueue(new retrofit2.Callback<ResponseBody>() {
                     @Override
                     public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                        String imgUrl = user.profileImageUrl;
-                        Picasso.with(getApplicationContext())
-                                .load(imgUrl.replace("_normal", ""))
-                                .into(imageViewUserAvatar);
+                        try {
+                            String imgUrl = JsonUtils.parseProfileImage(response.body().string());
+                            Picasso.with(getApplicationContext())
+                                    .load(imgUrl.replace("_normal", "")).fit().centerInside()
+                                    .into(imageViewUserAvatar);
+                        } catch (Exception e) {
+                            Toast.makeText(HomePage.this, e.getLocalizedMessage(), Toast.LENGTH_LONG).show();
+                        }
                     }
 
                     @Override
@@ -174,7 +178,7 @@ public class HomePage extends Activity {
 
     private String convertBitMapToBase64(Bitmap selectedImage) {
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-        selectedImage.compress(Bitmap.CompressFormat.JPEG, 1, byteArrayOutputStream);
+        selectedImage.compress(Bitmap.CompressFormat.JPEG, 50, byteArrayOutputStream);
         byte[] byteArray = byteArrayOutputStream.toByteArray();
         return Base64.encodeToString(byteArray, Base64.DEFAULT);
     }

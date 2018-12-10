@@ -28,4 +28,9 @@ public final class JsonUtils {
         }
         return users;
     }
+
+    public static String parseProfileImage(String json) throws JSONException {
+        JSONObject response = new JSONObject(json);
+        return response.getString("profile_image_url");
+    }
 }
