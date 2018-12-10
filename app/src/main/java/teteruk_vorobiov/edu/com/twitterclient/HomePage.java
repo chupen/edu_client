@@ -29,6 +29,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.concurrent.Callable;
 
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -137,20 +138,22 @@ public class HomePage extends Activity {
         final TwitterSession session = TwitterCore.getInstance().getSessionManager()
                 .getActiveSession();
         MyTwitterApiClient apiClients = new MyTwitterApiClient(session);
-        apiClients.getUploadService().sendPhoto(user.id, convertBitMapToBase64(selectedImage), new Callback<Response>() {
-            @Override
-            public void success(Result<Response> result) {
-                String imgUrl = user.profileImageUrl;
-                Picasso.with(getApplicationContext())
-                        .load(imgUrl.replace("_normal", ""))
-                        .into(imageViewUserAvatar);
-            }
 
-            @Override
-            public void failure(TwitterException e) {
-                Log.v(TAG, "TwitterException response -->" + e);
-            }
-        });
+        apiClients.getUploadService().updateProfileImage(convertBitMapToBase64(selectedImage))
+                .enqueue(new retrofit2.Callback<ResponseBody>() {
+                    @Override
+                    public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                        String imgUrl = user.profileImageUrl;
+                        Picasso.with(getApplicationContext())
+                                .load(imgUrl.replace("_normal", ""))
+                                .into(imageViewUserAvatar);
+                    }
+
+                    @Override
+                    public void onFailure(Call<ResponseBody> call, Throwable t) {
+                        Log.v(TAG, "TwitterException response -->" + t);
+                    }
+                });
     }
 
     @Override
@@ -171,7 +174,7 @@ public class HomePage extends Activity {
 
     private String convertBitMapToBase64(Bitmap selectedImage) {
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-        selectedImage.compress(Bitmap.CompressFormat.PNG, 100, byteArrayOutputStream);
+        selectedImage.compress(Bitmap.CompressFormat.JPEG, 1, byteArrayOutputStream);
         byte[] byteArray = byteArrayOutputStream.toByteArray();
         return Base64.encodeToString(byteArray, Base64.DEFAULT);
     }
