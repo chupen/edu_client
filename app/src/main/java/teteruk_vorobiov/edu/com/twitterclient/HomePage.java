@@ -70,9 +70,7 @@ public class HomePage extends Activity {
                         textViewUsername.setText(user.name);
 
                         String imgUrl = user.profileImageUrl;
-                        Picasso.with(getApplicationContext())
-                                .load(imgUrl.replace("_normal", ""))
-                                .into(imageViewUserAvatar);
+                        uploadAvatar(imgUrl);
                     }
 
                     @Override
@@ -81,6 +79,12 @@ public class HomePage extends Activity {
                                 exception.getLocalizedMessage(), Toast.LENGTH_LONG).show();
                     }
                 });
+    }
+
+    private void uploadAvatar(String imgUrl) {
+        Picasso.with(getApplicationContext())
+                .load(imgUrl.replace("_normal", "")).fit().centerInside()
+                .into(imageViewUserAvatar);
     }
 
     private void initView() {
@@ -102,30 +106,10 @@ public class HomePage extends Activity {
         makeTweetButton.setOnClickListener((view) -> startActivity(intent));
 
         Button showFollowersButton = findViewById(R.id.show_followers);
-        showFollowersButton.setOnClickListener(view -> getFollowers(session));
-    }
+        showFollowersButton.setOnClickListener(view -> startActivity(new Intent(this, FollowersActivity.class)));
 
-    private void getFollowers(TwitterSession session) {
-        MyApiClient apiClient = new MyApiClient(session);
-        apiClient.getFollowersService().listFollowers(session.getUserId()).enqueue(new retrofit2.Callback<ResponseBody>() {
-            @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                Intent intent = new Intent(HomePage.this, FollowersActivity.class);
-                try {
-                    intent.putExtra("followersJson", response.body().string());
-                    startActivity(intent);
-                } catch (IOException e) {
-                    Toast.makeText(HomePage.this,
-                            e.getLocalizedMessage(), Toast.LENGTH_LONG).show();
-                }
-            }
-
-            @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
-                Toast.makeText(HomePage.this,
-                        t.getLocalizedMessage(), Toast.LENGTH_LONG).show();
-            }
-        });
+        Button showFriendsButton = findViewById(R.id.show_friends);
+        showFriendsButton.setOnClickListener(view -> startActivity(new Intent(this, FriendsActivity.class)));
     }
 
     public void changeAvatar(View view) {
@@ -145,9 +129,7 @@ public class HomePage extends Activity {
                     public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                         try {
                             String imgUrl = JsonUtils.parseProfileImage(response.body().string());
-                            Picasso.with(getApplicationContext())
-                                    .load(imgUrl.replace("_normal", "")).fit().centerInside()
-                                    .into(imageViewUserAvatar);
+                            uploadAvatar(imgUrl);
                         } catch (Exception e) {
                             Toast.makeText(HomePage.this, e.getLocalizedMessage(), Toast.LENGTH_LONG).show();
                         }
