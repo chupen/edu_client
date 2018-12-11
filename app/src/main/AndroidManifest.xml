@@ -21,6 +21,7 @@
         <activity android:name=".TweetActivity" />
         <activity android:name=".TimelineActivity" />
         <activity android:name=".FriendsActivity" />
+        <activity android:name=".FollowersActivity" />
     </application>
 
 </manifest>

@@ -7,7 +7,7 @@
     <string name="userinfo">UserInfo</string>
     <string name="avatar">Avatar</string>
     <string name="login_please">Login please</string>
-    <string name="following">Following</string>
+    <string name="friends">Friends</string>
     <string name="followers">Followers</string>
     <string name="change_avatar">Change profile image</string>
     <string name="my_tweet">My Tweets</string>

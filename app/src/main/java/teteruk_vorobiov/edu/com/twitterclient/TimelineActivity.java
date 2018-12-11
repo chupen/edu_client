@@ -21,7 +21,8 @@ public class TimelineActivity extends ListActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.timeline);
         final SwipeRefreshLayout swipeLayout = findViewById(R.id.refresh);
-        long userId = TwitterCore.getInstance().getSessionManager().getActiveSession().getUserId();
+        long defaultId = TwitterCore.getInstance().getSessionManager().getActiveSession().getUserId();
+        long userId = getIntent().getLongExtra("userId", defaultId);
         final UserTimeline userTimeline = new UserTimeline.Builder()
                 .userId(userId)
                 .includeReplies(true)
