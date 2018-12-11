@@ -1,12 +1,13 @@
 package teteruk_vorobiov.edu.com.twitterclient.services;
 
-import com.twitter.sdk.android.core.Callback;
-
-import retrofit2.Response;
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.http.Field;
+import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.POST;
-import retrofit2.http.Query;
 
 public interface UploadPhotoService {
+    @FormUrlEncoded
     @POST("/1.1/account/update_profile_image.json")
-    void sendPhoto(@Query("user_id") long id, @Query("image") String image, Callback<Response> cb);
+    Call<ResponseBody> updateProfileImage(@Field("image") String image);
 }

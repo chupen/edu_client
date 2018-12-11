@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent">
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <android.support.v7.widget.LinearLayoutCompat
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="12dp"
+            android:padding="4dp">
+
+            <ImageView
+                android:id="@+id/user_profile_avatar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="20dp"
+                android:background="@drawable/rounded_corner"
+                android:contentDescription="@string/avatar"
+                android:maxWidth="50dp"
+                android:maxHeight="50dp"
+                android:scaleType="fitStart"
+                android:src="@drawable/ic_people_black_24dp" />
+
+            <TextView
+                android:id="@+id/user_profile_info"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp"
+                android:text="@string/userinfo" />
+        </android.support.v7.widget.LinearLayoutCompat>
+    </LinearLayout>
+</ScrollView>

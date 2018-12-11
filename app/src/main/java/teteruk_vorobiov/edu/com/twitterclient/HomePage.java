@@ -2,8 +2,14 @@ package teteruk_vorobiov.edu.com.twitterclient;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.util.Base64;
+import android.util.Log;
+import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -19,16 +25,23 @@ import com.twitter.sdk.android.core.TwitterSession;
 import com.twitter.sdk.android.core.models.User;
 import com.twitter.sdk.android.tweetcomposer.ComposerActivity;
 
+import java.io.ByteArrayOutputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Response;
+import teteruk_vorobiov.edu.com.twitterclient.utils.JsonUtils;
+
+import static com.twitter.sdk.android.core.Twitter.TAG;
 
 public class HomePage extends Activity {
     private TextView textViewUsername;
     private TextView textViewUserInfo;
     private ImageView imageViewUserAvatar;
+    private User user;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -45,7 +58,7 @@ public class HomePage extends Activity {
                 .enqueue(new Callback<User>() {
                     @Override
                     public void success(Result<User> result) {
-                        User user = result.data;
+                        user = result.data;
 
                         String stringBuilder = "Email: " + user.email + System.lineSeparator() +
                                 "Description:" + user.description + System.lineSeparator() +
@@ -94,7 +107,7 @@ public class HomePage extends Activity {
 
     private void getFollowers(TwitterSession session) {
         MyApiClient apiClient = new MyApiClient(session);
-        apiClient.getFollowersService().list(session.getUserId()).enqueue(new retrofit2.Callback<ResponseBody>() {
+        apiClient.getFollowersService().listFollowers(session.getUserId()).enqueue(new retrofit2.Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                 Intent intent = new Intent(HomePage.this, FollowersActivity.class);
@@ -113,5 +126,60 @@ public class HomePage extends Activity {
                         t.getLocalizedMessage(), Toast.LENGTH_LONG).show();
             }
         });
+    }
+
+    public void changeAvatar(View view) {
+        Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
+        photoPickerIntent.setType("image/*");
+        startActivityForResult(photoPickerIntent, 200);
+    }
+
+    private void uploadPicture(Bitmap selectedImage) {
+        final TwitterSession session = TwitterCore.getInstance().getSessionManager()
+                .getActiveSession();
+        MyTwitterApiClient apiClients = new MyTwitterApiClient(session);
+
+        apiClients.getUploadService().updateProfileImage(convertBitMapToBase64(selectedImage))
+                .enqueue(new retrofit2.Callback<ResponseBody>() {
+                    @Override
+                    public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                        try {
+                            String imgUrl = JsonUtils.parseProfileImage(response.body().string());
+                            Picasso.with(getApplicationContext())
+                                    .load(imgUrl.replace("_normal", "")).fit().centerInside()
+                                    .into(imageViewUserAvatar);
+                        } catch (Exception e) {
+                            Toast.makeText(HomePage.this, e.getLocalizedMessage(), Toast.LENGTH_LONG).show();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<ResponseBody> call, Throwable t) {
+                        Log.v(TAG, "TwitterException response -->" + t);
+                    }
+                });
+    }
+
+    @Override
+    protected void onActivityResult(int reqCode, int resultCode, Intent data) {
+        super.onActivityResult(reqCode, resultCode, data);
+
+        if (resultCode == RESULT_OK) {
+            try {
+                final Uri imageUri = data.getData();
+                final InputStream imageStream = getContentResolver().openInputStream(imageUri);
+                Bitmap selectedImage = BitmapFactory.decodeStream(imageStream);
+                uploadPicture(selectedImage);
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private String convertBitMapToBase64(Bitmap selectedImage) {
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        selectedImage.compress(Bitmap.CompressFormat.JPEG, 50, byteArrayOutputStream);
+        byte[] byteArray = byteArrayOutputStream.toByteArray();
+        return Base64.encodeToString(byteArray, Base64.DEFAULT);
     }
 }
